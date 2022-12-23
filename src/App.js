@@ -1,23 +1,61 @@
-import logo from './logo.svg';
 import './App.css';
+import ResponsiveAppBar from './components/Navbar';
+import Home from './components/Home/Home';
+import Footer from './components/Footer/Footer';
+import Register from './components/register/Register';
+import { Route, Routes } from 'react-router-dom';
+import Login from './components/Login/Login';
+import Protected from './Protected';
+import { useEffect, useState } from 'react';
+import Dashboard from './components/Dashboard/Dashboard/Dashboard';
+import Logout from './components/Logout/Logout.jsx';
+import Update from './components/Dashboard/update/update';
 
 function App() {
+
+  const [auth, setAuth] = useState(false);
+  const [auth1, setAuth1] = useState(true);
+
+  const isLoggedIn = async () => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/auth`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+      });
+
+      if (res.status === 200) {
+        setAuth(true);
+        setAuth1(false);
+      }
+      if (res.status === 401) {
+        setAuth(false);
+        setAuth1(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    isLoggedIn();
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ResponsiveAppBar auth={auth1} />
+      <Routes>
+        <Route path='/' element={ <Home /> } />
+        <Route path='/register' element={<Protected auth={auth1}> <Register /> </Protected>} />
+        <Route path='/login' element={<Protected auth={auth1}> <Login /> </Protected>} />
+        <Route path='/dashboard' element={<Protected auth={auth}> <Dashboard /> </Protected>} />
+        <Route path='/dashboard/update' element={<Protected auth={auth}> <Update /> </Protected>} />
+        <Route path='/logout' element={<Protected auth={auth}> <Logout /> </Protected>} />
+      </Routes>
+      <Footer />
     </div>
   );
 }
