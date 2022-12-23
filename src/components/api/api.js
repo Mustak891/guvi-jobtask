@@ -1,1 +1,1 @@
-export const API_URL = 'https://guvi-jobtask-node.vercel.app';
+export const API_URL = 'https://guvi-node.vercel.app';
