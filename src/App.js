@@ -18,7 +18,7 @@ function App() {
 
   const isLoggedIn = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/auth`, {
+      const res = await fetch(`https://guvi-jobtask-node.vercel.app/api/auth`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
